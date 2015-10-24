@@ -1,11 +1,15 @@
 vcl 4.0;
 
+import example;
+
 backend default {
     .host = "{{BACKEND_PORT_80_TCP_ADDR}}";
     .port = "{{BACKEND_PORT_80_TCP_PORT}}";
 }
 
-sub vcl_recv {
+sub vcl_deliver {
+        # This sets resp.http.hello to "Hello, World"
+        set resp.http.hello = example.hello("World");
 }
 
 sub vcl_backend_response {
