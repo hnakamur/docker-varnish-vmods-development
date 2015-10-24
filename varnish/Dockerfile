@@ -22,4 +22,5 @@ ADD startup.sh /usr/local/sbin/
 
 RUN chmod +x /usr/local/sbin/startup.sh
 
+EXPOSE 6081
 CMD ["/usr/local/sbin/startup.sh"]
