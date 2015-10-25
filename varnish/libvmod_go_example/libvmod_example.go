@@ -2,6 +2,7 @@ package main
 
 /*
 #cgo pkg-config: varnishapi
+#cgo LDFLAGS: -Wl,--dynamic-list=syms.txt
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -15,24 +15,29 @@ docker-compose up -d
 docker exec -it dockervarnishvmodsdevelopment_varnish_1 bash -l -c "cd /root/libvmod_go_example && make"
 ```
 
-However I got the following errors:
+I read these and added `-Wl,--dynamic-list=syms.txt` to LDFLAGS.
+
+* http://stackoverflow.com/a/6298434/1391518
+* https://sourceware.org/ml/binutils/2010-01/msg00418.html
+
+However I still got the following errors:
 
 ```
 ...
 cd /root/libvmod_go_example
 pkg-config --cflags varnishapi
 pkg-config --libs varnishapi
-CGO_LDFLAGS="-g" "-O2" "-lvarnishapi" /usr/local/go/pkg/tool/linux_amd64/cgo -objdir $WORK/command-line-arguments/_obj/ -importpath command-line-arguments -exportheader=$WORK/command-line-arguments/_obj/_cgo_install.h -- -I/usr/include/varnish -I $WORK/command-line-arguments/_obj/ libvmod_example.go vcc_if.go
+CGO_LDFLAGS="-g" "-O2" "-Wl,--dynamic-list=syms.txt" "-lvarnishapi" /usr/local/go/pkg/tool/linux_amd64/cgo -objdir $WORK/command-line-arguments/_obj/ -importpath command-line-arguments -exportheader=$WORK/command-line-arguments/_obj/_cgo_install.h -- -I/usr/include/varnish -I $WORK/command-line-arguments/_obj/ libvmod_example.go vcc_if.go
 gcc -I . -fPIC -m64 -pthread -fmessage-length=0 -I/usr/include/varnish -I $WORK/command-line-arguments/_obj/ -g -O2 -o $WORK/command-line-arguments/_obj/_cgo_main.o -c $WORK/command-line-arguments/_obj/_cgo_main.c
 gcc -I . -fPIC -m64 -pthread -fmessage-length=0 -I/usr/include/varnish -I $WORK/command-line-arguments/_obj/ -g -O2 -o $WORK/command-line-arguments/_obj/_cgo_export.o -c $WORK/command-line-arguments/_obj/_cgo_export.c
 gcc -I . -fPIC -m64 -pthread -fmessage-length=0 -I/usr/include/varnish -I $WORK/command-line-arguments/_obj/ -g -O2 -o $WORK/command-line-arguments/_obj/libvmod_example.cgo2.o -c $WORK/command-line-arguments/_obj/libvmod_example.cgo2.c
 gcc -I . -fPIC -m64 -pthread -fmessage-length=0 -I/usr/include/varnish -I $WORK/command-line-arguments/_obj/ -g -O2 -o $WORK/command-line-arguments/_obj/vcc_if.cgo2.o -c $WORK/command-line-arguments/_obj/vcc_if.cgo2.c
-gcc -I . -fPIC -m64 -pthread -fmessage-length=0 -o $WORK/command-line-arguments/_obj/_cgo_.o $WORK/command-line-arguments/_obj/_cgo_main.o $WORK/command-line-arguments/_obj/_cgo_export.o $WORK/command-line-arguments/_obj/libvmod_example.cgo2.o $WORK/command-line-arguments/_obj/vcc_if.cgo2.o -g -O2 -lvarnishapi
+gcc -I . -fPIC -m64 -pthread -fmessage-length=0 -o $WORK/command-line-arguments/_obj/_cgo_.o $WORK/command-line-arguments/_obj/_cgo_main.o $WORK/command-line-arguments/_obj/_cgo_export.o $WORK/command-line-arguments/_obj/libvmod_example.cgo2.o $WORK/command-line-arguments/_obj/vcc_if.cgo2.o -g -O2 -Wl,--dynamic-list=syms.txt -lvarnishapi
 # command-line-arguments
-/tmp/go-build219936183/command-line-arguments/_obj/libvmod_example.cgo2.o: In function `_cgo_d098f44947dd_Cfunc_WS_Reserve':
-./libvmod_example.go:64: undefined reference to `WS_Reserve'
-/tmp/go-build219936183/command-line-arguments/_obj/libvmod_example.cgo2.o: In function `_cgo_d098f44947dd_Cfunc_WS_Release':
-./libvmod_example.go:50: undefined reference to `WS_Release'
+/tmp/go-build594609400/command-line-arguments/_obj/libvmod_example.cgo2.o: In function `_cgo_eec7db90cb24_Cfunc_WS_Reserve':
+./libvmod_example.go:65: undefined reference to `WS_Reserve'
+/tmp/go-build594609400/command-line-arguments/_obj/libvmod_example.cgo2.o: In function `_cgo_eec7db90cb24_Cfunc_WS_Release':
+./libvmod_example.go:51: undefined reference to `WS_Release'
 /usr/lib/gcc/x86_64-redhat-linux/4.8.3/../../../../lib64/libvarnishapi.so: undefined reference to `pow'
 /usr/lib/gcc/x86_64-redhat-linux/4.8.3/../../../../lib64/libvarnishapi.so: undefined reference to `round'
 collect2: error: ld returned 1 exit status
