@@ -13,9 +13,7 @@ package main
 
 // #include "vcc_if.h"
 
-static unsigned build_hello_message(char *p, unsigned u, char *name) {
-        return snprintf(p, u, "Hello, %s", name);
-}
+extern unsigned build_hello_message(char *p, unsigned u, char *name);
 */
 import (
 	"C"

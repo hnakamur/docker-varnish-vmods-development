@@ -22,8 +22,8 @@ RUN curl -sL https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz | 
  && echo 'export GOPATH=/root/gocode' >> /root/.bash_profile\
  && echo 'export PATH="$GOPATH/bin:/usr/local/go/bin:$PATH"' >> /root/.bash_profile
 
-ADD libvmod_go_example/ /root/libvmod_go_example/
-RUN cp /root/rpmbuild/SOURCES/libvmod-example-4.1/{config.h,src/vcc_if.[ch]} /root/libvmod_go_example/
+ADD libvmod_go_example/ /root/rpmbuild/SOURCES/libvmod-example-4.1/libvmod_go_example/
+RUN cp /root/rpmbuild/SOURCES/libvmod-example-4.1/{config.h,src/vcc_if.[ch]} /root/rpmbuild/SOURCES/libvmod-example-4.1/libvmod_go_example/
 
 RUN curl -sL https://github.com/varnish/Varnish-Cache/archive/varnish-4.1.0.tar.gz | tar zxf - -C /root/rpmbuild/SOURCES/
 
