@@ -39,8 +39,17 @@ collect2: error: ld returned 1 exit status
 make: *** [libvmod_example.so] Error 2
 ```
 
-Functions `WS_Reserve` and `WS_Release` are defined in libvarnishapi.so. I confirmed it with the following command which printed nothing (= no match).
+Functions `WS_Reserve` and `WS_Release` are not linked in libvarnishapi.so. I confirmed it with the following command which printed nothing (= no match).
 
 ```
 docker exec -it dockervarnishvmodsdevelopment_varnish_1 bash -l -c "nm /usr/lib/debug/usr/lib64/libvarnishapi.so.debug | grep -E '(WS_Reserve|WS_Release)'"
+```
+
+Functions `WS_Reserve` and `WS_Release` are defined in [varnish-4.1.0/bin/varnishd/cache/cache_ws.c](https://github.com/varnish/Varnish-Cache/blob/varnish-4.1.0/bin/varnishd/cache/cache_ws.c#L208-L240). They are linked in varnishd (See https://github.com/varnish/Varnish-Cache/blob/varnish-4.1.0/bin/varnishd/Makefile.am#L52).
+
+However these two functions are not linked in any varnish libraries. I confirmed it with the following command which printed one line but `cache_ws.c` is just mentioned in a comment.
+
+```
+$ docker exec -it dockervarnishvmodsdevelopment_varnish_1 bash -l -c "cd /root/rpmbuild/SOURCES/Varnish-Cache-varnish-4.1.0/lib && grep -R cache_ws ."
+./libvmod_std/vmod_std_querysort.c:     /* We trust cache_ws.c to align sensibly */
 ```
